@@ -1,0 +1,17 @@
+---
+- name: Creates directory
+  file:
+    path: "{{ docker_dir }}"
+    state: directory
+
+- name: Copy files
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ docker_dir }}/{{ item.dest }}"
+  with_items: "{{ files_to_copy }}"
+
+- name: Start Docker Compose
+  docker_compose:
+    project_src: "{{ docker_dir }}"
+    state: present
+    build: ye

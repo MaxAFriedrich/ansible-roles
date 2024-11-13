@@ -1,0 +1,57 @@
+---
+- name: Install Docker Engine on Debian-based systems
+  apt:
+    name: docker.io
+    state: present
+  when: ansible_facts['ansible_distribution'] == 'Debian'
+
+- name: Install Docker CLI on Debian-based systems
+  apt:
+    name: docker-compose
+    state: present
+  when: ansible_facts['ansible_distribution'] == 'Debian'
+
+- name: Start Docker service on Debian-based systems
+  service:
+    name: docker
+    state: started
+    enabled: true
+  when: ansible_facts['ansible_distribution'] == 'Debian'
+
+- name: Install Docker Engine on RHEL-based systems
+  dnf:
+    name: docker
+    state: present
+  when: ansible_facts['ansible_distribution'] in ['RedHat', 'CentOS', 'Fedora', 'Rocky', 'AlmaLinux']
+
+- name: Install Docker CLI on RHEL-based systems
+  dnf:
+    name: docker-compose
+    state: present
+  when: ansible_facts['ansible_distribution'] in ['RedHat', 'CentOS', 'Fedora', 'Rocky', 'AlmaLinux']
+
+- name: Start Docker service on RHEL-based systems
+  service:
+    name: docker
+    state: started
+    enabled: true
+  when: ansible_facts['ansible_distribution'] in ['RedHat', 'CentOS', 'Fedora', 'Rocky', 'AlmaLinux']
+
+- name: Install Docker Engine on Alpine-based systems
+  apk:
+    name: docker
+    state: present
+  when: ansible_facts['ansible_distribution'] == 'Alpine'
+
+- name: Install Docker CLI on Alpine-based systems
+  apk:
+    name: docker-compose
+    state: present
+  when: ansible_facts['ansible_distribution'] == 'Alpine'
+
+- name: Start Docker service on Alpine-based systems
+  service:
+    name: docker
+    state: started
+    enabled: true
+  when: ansible_facts['ansible_distribution'] == 'Alpine'

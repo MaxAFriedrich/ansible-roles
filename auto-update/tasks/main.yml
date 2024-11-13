@@ -1,0 +1,33 @@
+---
+- name: Install apt prerequisites for automated updates
+  ansible.builtin.apt:
+    name:
+      - unattended-upgrades
+      - apt-listchanges
+    state: present
+  when: ansible_facts['ansible_distribution'] == 'Debian'
+
+- name: Create unattended upgrades configuration file
+  ignore_errors: yes
+  ansible.builtin.blockinfile:
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    block: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+    marker: "// {mark} ANSIBLE MANAGED BLOCK - unattended_upgrades settings"
+    create: true
+    mode: "0644"
+    owner: root
+    group: root
+  register: unattended_upgrades_config_set
+  when: ansible_facts['ansible_distribution'] == 'Debian'
+
+- name: Dpkg reconfigure
+  ignore_errors: yes
+  ansible.builtin.command:
+    cmd: dpkg-reconfigure -f noninteractive unattended-upgrades
+  register: dpkg_reconfigure_unattended_upgrades
+  when:
+    - ansible_facts['ansible_distribution'] == 'Debian'
+    - unattended_upgrades_config_set.changed or
+      unattended_upgrades_settings_set.changed

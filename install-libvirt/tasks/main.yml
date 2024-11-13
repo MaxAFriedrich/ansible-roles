@@ -1,0 +1,68 @@
+---
+- name: Install required packages
+  apt:
+    name:
+      - qemu-kvm
+      - qemu-system
+      - qemu-utils
+      - python3
+      - python3-pip
+      - libvirt-clients
+      - libvirt-daemon-system
+      - bridge-utils
+      - virtinst
+      - libvirt-daemon
+      - virt-manager
+      - libvirt-dev
+    state: present
+
+- name: Start default network
+  ignore_errors: yes
+  command: virsh net-start default
+  tags:
+    - network
+
+- name: Set default network to autostart
+  command: virsh net-autostart default
+  tags:
+    - network
+
+- name: Add user to libvirt group
+  user:
+    name: "{{ ansible_user }}"
+    groups: libvirt
+    append: yes
+  tags:
+    - usergroups
+
+- name: Add user to libvirt-qemu group
+  user:
+    name: "{{ ansible_user }}"
+    groups: libvirt-qemu
+    append: yes
+  tags:
+    - usergroups
+
+- name: Add user to kvm group
+  user:
+    name: "{{ ansible_user }}"
+    groups: kvm
+    append: yes
+  tags:
+    - usergroups
+
+- name: Add user to input group
+  user:
+    name: "{{ ansible_user }}"
+    groups: input
+    append: yes
+  tags:
+    - usergroups
+
+- name: Add user to disk group
+  user:
+    name: "{{ ansible_user }}"
+    groups: disk
+    append: yes
+  tags:
+    - usergroups

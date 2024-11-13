@@ -1,0 +1,16 @@
+---
+- name: Apply OS hardening
+  include_role:
+    name: devsec.hardening.os_hardening
+
+- name: Apply SSH hardening
+  include_role:
+    name: devsec.hardening.ssh_hardening
+  when: enable_ssh_hardening
+
+- name: Install and configure Fail2Ban
+  include_role:
+    name: robertdebock.fail2ban
+  when: enable_ssh_hardening
+
+# TODO add iptables rules
