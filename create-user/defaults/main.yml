@@ -1,0 +1,4 @@
+---
+add_ssh: false
+is_sudo: false
+username: max

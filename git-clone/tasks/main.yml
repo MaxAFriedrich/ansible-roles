@@ -1,0 +1,13 @@
+---
+- name: Ensure {{ dest }} directory exists
+  file:
+    path: "{{ dest }}"
+    state: directory
+
+- name: Clone the Git repository
+  git:
+    repo: "{{ repo }}"
+    dest: "{{ dest }}"
+    version: "{{ branch }}"
+    update: yes
+    force: yes

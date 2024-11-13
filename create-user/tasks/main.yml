@@ -1,0 +1,44 @@
+---
+- name: Create user
+  user:
+    name: "{{ username }}"
+    password: "{{ user_password | password_hash('sha512') }}"
+    shell: /bin/bash
+    createhome: yes
+
+- name: Check if sudo is installed
+  command: which sudo
+  register: sudo_check
+  ignore_errors: yes
+
+- name: Check if doas is installed
+  command: which doas
+  register: doas_check
+  ignore_errors: yes
+
+- name: Set fact if sudo or doas is installed
+  set_fact:
+    sudo_installed: "{{ sudo_check.rc == 0 }}"
+    doas_installed: "{{ doas_check.rc == 0 }}"
+
+- name: Add user to sudoers
+  lineinfile:
+    dest: /etc/sudoers
+    line: "{{ username }} ALL=(ALL) NOPASSWD: ALL"
+    validate: 'visudo -cf %s'
+  become: yes
+  when: is_sudo and sudo_installed
+
+- name: Add user to doas.conf
+  lineinfile:
+    dest: /etc/doas.conf
+    line: "permit nopass {{ username }} as root"
+  become: yes
+  when: is_sudo and doas_installed
+
+- name: Copy SSH key to user's authorized_keys file
+  authorized_key:
+    user: "{{ username }}"
+    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+    state: present
+  when: add_ssh
