@@ -1,0 +1,8 @@
+---
+wireshark_cli: true
+wireshark_gui: false
+wireshark_cli_package:
+  - tshark
+wireshark_gui_package:
+  - wireshark
+wireshark_user: "{{ ansible_user }}"

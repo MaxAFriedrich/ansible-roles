@@ -1,0 +1,34 @@
+---
+- name: Clear the content of /etc/network/interfaces
+  copy:
+    content: ""
+    dest: /etc/network/interfaces
+    backup: yes
+
+- name: Set content of /etc/network/interfaces
+  copy:
+    content: |
+      auto lo
+      iface lo inet loopback
+    dest: /etc/network/interfaces
+
+- name: Remove existing [ifupdown] managed=false line
+  lineinfile:
+    path: /etc/NetworkManager/NetworkManager.conf
+    regexp: '^managed=false'
+    state: absent
+
+- name: Remove existing [ifupdown] section
+  lineinfile:
+    path: /etc/NetworkManager/NetworkManager.conf
+    regexp: '^\[ifupdown\]'
+    state: absent
+
+- name: Ensure NetworkManager is configured to manage interfaces
+  blockinfile:
+    path: /etc/NetworkManager/NetworkManager.conf
+    block: |
+      [ifupdown]
+      managed=true
+    create: yes
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"

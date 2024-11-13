@@ -1,0 +1,26 @@
+---
+- name: Ensure wget is installed
+  apt:
+    name: wget
+    state: present
+
+- name: Download and add the Oracle VirtualBox GPG key
+  shell: wget -O- https://www.virtualbox.org/download/oracle_vbox_2016.asc | gpg --yes --output /usr/share/keyrings/oracle-virtualbox-2016.gpg --dearmor
+  args:
+    creates: /usr/share/keyrings/oracle-virtualbox-2016.gpg
+
+- name: Add the VirtualBox repository to sources list
+  apt_repository:
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/oracle-virtualbox-2016.gpg] https://download.virtualbox.org/virtualbox/debian {{ ansible_distribution_release }} contrib"
+    state: present
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install VirtualBox
+  apt:
+    name: virtualbox-7.0
+    state: present
+
+# TODO get the latest version of VirtualBox

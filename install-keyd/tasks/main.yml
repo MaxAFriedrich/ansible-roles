@@ -1,0 +1,32 @@
+---
+- name: Clone the keyd repository
+  git:
+    repo: https://github.com/rvaiya/keyd
+    dest: /gitBuild/keyd
+    update: yes
+
+- name: Build and install keyd
+  shell: |
+    cd /gitBuild/keyd
+    make
+    sudo make install
+  args:
+    creates: /usr/local/bin/keyd
+
+- name: Remove /etc/keyd directory if it exists
+  file:
+    path: /etc/keyd
+    state: absent
+    force: yes
+
+- name: Create a symbolic link for /etc/keyd
+  file:
+    src: "/home/max/f/dotfiles/keyd"
+    dest: /etc/keyd
+    state: link
+
+- name: Enable and start keyd service
+  systemd:
+    name: keyd
+    enabled: yes
+    state: started

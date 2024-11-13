@@ -1,0 +1,37 @@
+---
+- name: Run apt-get update
+  apt:
+    update_cache: yes
+  become: yes
+
+- name: Let non-root users capture traffic
+  debconf:
+    name: 'wireshark-common'
+    question: 'wireshark-common/install-setuid'
+    vtype: 'boolean'
+    value: 'true'
+
+- name: Install CLI package
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ wireshark_cli_package }}"
+  when: wireshark_cli
+
+- name: Install GUI package
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ wireshark_gui_package }}"
+  when: wireshark_gui
+
+- name: Make sure wireshark group exists
+  group:
+    name: wireshark
+    state: present
+
+- name: Add current user to wireshark group
+  user:
+    name: "{{ wireshark_user }}"
+    append: yes
+    groups: wireshark

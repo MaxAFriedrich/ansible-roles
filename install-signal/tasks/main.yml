@@ -1,0 +1,34 @@
+---
+- name: Install required packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - wget
+    - gnupg
+
+- name: Download and install Signal public key
+  shell: "wget -qO- https://updates.signal.org/desktop/apt/keys.asc | gpg --dearmor > /usr/share/keyrings/signal-desktop-keyring.gpg"
+  args:
+    executable: /bin/bash
+
+
+- name: Ensure signal-xenial.list exists
+  file:
+    path: /etc/apt/sources.list.d/signal-xenial.list
+    state: touch
+
+- name: Add Signal repository to sources.list.d
+  blockinfile:
+    path: /etc/apt/sources.list.d/signal-xenial.list
+    block: |
+      deb [arch=amd64 signed-by=/usr/share/keyrings/signal-desktop-keyring.gpg] https://updates.signal.org/desktop/apt xenial main
+
+- name: Update package database
+  apt:
+    update_cache: yes
+
+- name: Install Signal Desktop
+  apt:
+    name: signal-desktop
+    state: present

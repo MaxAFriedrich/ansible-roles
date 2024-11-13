@@ -1,0 +1,26 @@
+---
+- name: Ensure required packages are installed
+  apt:
+    name:
+      - curl
+    state: present
+
+- name: Download the Brave browser signing key
+  command: curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+  args:
+    creates: /usr/share/keyrings/brave-browser-archive-keyring.gpg
+
+- name: Add Brave browser repository
+  copy:
+    dest: /etc/apt/sources.list.d/brave-browser-release.list
+    content: |
+      deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install Brave browser
+  apt:
+    name: brave-browser
+    state: present
