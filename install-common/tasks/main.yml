@@ -1,4 +1,7 @@
 ---
+- name: Gather facts
+  ansible.builtin.setup:
+
 - name: Install common packages on Debian-based systems
   ansible.builtin.apt:
     name:
@@ -7,7 +10,7 @@
       - curl
       - htop
     state: present
-  when: ansible_facts['ansible_distribution'] == 'Debian'
+  when: ansible_facts['distribution'] == 'Debian'
 
 - name: Install common packages on Alpine-based systems
   ansible.builtin.apk:
@@ -17,7 +20,7 @@
       - curl
       - htop
     state: present
-  when: ansible_facts['ansible_distribution'] == 'Alpine'
+  when: ansible_facts['distribution'] == 'Alpine'
 
 - name: Install common packages on RHEL-based systems
   ansible.builtin.dnf:
@@ -27,4 +30,4 @@
       - curl
       - htop
     state: present
-  when: ansible_facts['ansible_distribution'] in ['RedHat', 'CentOS', 'Fedora', 'Rocky', 'AlmaLinux']
+  when: ansible_facts['distribution'] in ['RedHat', 'CentOS', 'Fedora', 'Rocky', 'AlmaLinux']

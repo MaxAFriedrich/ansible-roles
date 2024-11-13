@@ -5,7 +5,7 @@
       - unattended-upgrades
       - apt-listchanges
     state: present
-  when: ansible_facts['ansible_distribution'] == 'Debian'
+  when: ansible_facts['distribution'] == 'Debian'
 
 - name: Create unattended upgrades configuration file
   ignore_errors: yes
@@ -20,7 +20,7 @@
     owner: root
     group: root
   register: unattended_upgrades_config_set
-  when: ansible_facts['ansible_distribution'] == 'Debian'
+  when: ansible_facts['distribution'] == 'Debian'
 
 - name: Dpkg reconfigure
   ignore_errors: yes
@@ -28,6 +28,6 @@
     cmd: dpkg-reconfigure -f noninteractive unattended-upgrades
   register: dpkg_reconfigure_unattended_upgrades
   when:
-    - ansible_facts['ansible_distribution'] == 'Debian'
+    - ansible_facts['distribution'] == 'Debian'
     - unattended_upgrades_config_set.changed or
       unattended_upgrades_settings_set.changed

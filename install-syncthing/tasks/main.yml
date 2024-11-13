@@ -3,16 +3,16 @@
   apt:
     name: syncthing
     state: present
-  when: ansible_facts['ansible_distribution'] == 'Debian'
+  when: ansible_facts['distribution'] == 'Debian'
 
 - name: Enable Syncthing service for the current user
   systemd:
     name: "syncthing@{{ ansible_user }}.service"
     enabled: yes
-  when: ansible_facts['ansible_distribution'] == 'Debian'
+  when: ansible_facts['distribution'] == 'Debian'
 
 - name: Start Syncthing service for the current user
   systemd:
     name: "syncthing@{{ ansible_user }}.service"
     state: started
-  when: ansible_facts['ansible_distribution'] == 'Debian'
+  when: ansible_facts['distribution'] == 'Debian'
