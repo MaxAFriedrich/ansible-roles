@@ -55,3 +55,16 @@
     state: started
     enabled: true
   when: ansible_facts['ansible_distribution'] == 'Alpine'
+
+
+- name: Auto update with watchtower
+  docker_container:
+        name: watchtower
+        image: containrrr/watchtower
+        command: --run-once
+        restart_policy: unless-stopped
+        pull: always
+        volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+  when: auto_update
+
