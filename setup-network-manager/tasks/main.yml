@@ -1,4 +1,9 @@
 ---
+- name: Install NetworkManager
+  apt:
+    name:
+        - network-manager
+    state: present
 - name: Clear the content of /etc/network/interfaces
   copy:
     content: ""
