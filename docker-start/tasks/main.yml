@@ -11,7 +11,7 @@
   with_items: "{{ files_to_copy }}"
 
 - name: Start Docker Compose
-  docker_compose:
+  docker_compose_v2:
     project_src: "{{ docker_dir }}"
     state: present
     build: ye
