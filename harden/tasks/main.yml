@@ -13,4 +13,34 @@
     name: robertdebock.fail2ban
   when: enable_ssh_hardening
 
+# When having polkit-0.112-18.el7 (and later) installed and /proc mounted with hidepid=2,
+#  every time someone uses systemctl the following error is displayed, but systemctl runs successfully.
+# This is a workaround to avoid the error message.
+# https://github.com/dev-sec/ansible-collection-hardening/issues/364
+
+- name: Create monitor group
+  group:
+    name: monitor
+    gid: 995
+    system: yes
+
+- name: Add polkitd user to monitor group
+  user:
+    name: polkitd
+    groups: monitor
+    append: yes
+
+- name: Remount /proc with gid option
+  command: mount -o remount,gid=995 /proc
+
+- name: Apply the change to /proc persistently
+  mount:
+    name: /proc
+    src: proc
+    fstype: proc
+    opts: rw,nosuid,nodev,noexec,relatime,hidepid=2,gid=995
+    state: mounted
+    dump: 0
+    passno: 0
+
 # TODO add iptables rules
