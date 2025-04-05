@@ -68,3 +68,9 @@
         - /var/run/docker.sock:/var/run/docker.sock
   when: auto_update
 
+
+- name: add user to docker group
+  ansible.builtin.user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: yes
