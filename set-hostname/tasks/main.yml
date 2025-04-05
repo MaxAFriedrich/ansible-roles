@@ -1,0 +1,26 @@
+---
+- name: Set the hostname using hostname module
+  become: yes
+  hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Set the hostname using hostnamectl
+  become: yes
+  command: hostnamectl set-hostname "{{ inventory_hostname }}"
+
+- name: Ensure /etc/hostname is updated
+  become: yes
+  copy:
+    content: "{{ inventory_hostname }}\n"
+    dest: /etc/hostname
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Ensure /etc/hosts is updated
+  become: yes
+  lineinfile:
+    path: /etc/hosts
+    regexp: '^127\.0\.1\.1\s+'
+    line: "127.0.1.1 {{ inventory_hostname }}"
+    state: present
