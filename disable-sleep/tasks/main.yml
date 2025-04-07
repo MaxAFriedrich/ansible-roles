@@ -1,0 +1,17 @@
+---
+
+- name: Disable sleep and hibernate
+  lineinfile:
+    path: /etc/systemd/sleep.conf
+    regexp: '^#?(AllowSuspend|AllowHibernation|AllowSuspendThenHibernate|AllowHybridSleep)='
+    line: '\1=no'
+    create: yes
+    state: present
+
+- name: Reload systemd daemon
+  command: systemctl daemon-reload
+
+- name: Restart systemd-logind service
+  service:
+    name: systemd-logind
+    state: restarted
