@@ -1,0 +1,11 @@
+---
+- name: Enable sudo password prompt for all users except root
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '^%{{ item }} ALL=\(ALL:ALL\) NOPASSWD:ALL'
+    line: '%{{ item }} ALL=(ALL:ALL) ALL'
+  loop: "{{ ansible_users }}"
+  when: item != 'root'
+  become: yes
+  become_user: root

@@ -1,9 +1,0 @@
----
-- name: Disable sudo password prompt for the current user
-  lineinfile:
-    path: /etc/sudoers
-    state: present
-    regexp: '^%{{ ansible_user }} ALL=\(ALL:ALL\) NOPASSWD:ALL'
-    line: '%{{ ansible_user }} ALL=(ALL:ALL) NOPASSWD:ALL'
-  become: yes
-  become_user: root
