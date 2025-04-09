@@ -8,6 +8,30 @@
     create: yes
     state: present
 
+- name: Set HandleLidSwitch to ignore
+  lineinfile:
+    path: /etc/systemd/logind.conf
+    regexp: '^#?HandleLidSwitch='
+    line: 'HandleLidSwitch=ignore'
+    create: yes
+    state: present
+
+- name: Set HandleLidSwitchExternalPower to ignore
+  lineinfile:
+    path: /etc/systemd/logind.conf
+    regexp: '^#?HandleLidSwitchExternalPower='
+    line: 'HandleLidSwitchExternalPower=ignore'
+    create: yes
+    state: present
+
+- name: Set HandleLidSwitchDocked to ignore
+  lineinfile:
+    path: /etc/systemd/logind.conf
+    regexp: '^#?HandleLidSwitchDocked='
+    line: 'HandleLidSwitchDocked=ignore'
+    create: yes
+    state: present
+
 - name: Reload systemd daemon
   command: systemctl daemon-reload
 
