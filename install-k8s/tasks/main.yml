@@ -1,0 +1,73 @@
+---
+
+
+- name: disable swap for this boot
+  ansible.builtin.command: swapoff -a
+  when: ansible_swaptotal_mb > 0
+
+- name: disable swap permanently
+  ansible.builtin.command: sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+  when: ansible_swaptotal_mb > 0
+
+- name: Update apt package index
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Install required packages
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gpg
+    state: present
+
+- name: Ensure /etc/apt/keyrings directory exists
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
+- name: Download Kubernetes signing key
+  ansible.builtin.get_url:
+    url: https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key
+    dest: /tmp/Release.key
+
+- name: Convert Kubernetes signing key to GPG format
+  ansible.builtin.command:
+    cmd: gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg /tmp/Release.key
+    creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+- name: Remove temporary key file
+  ansible.builtin.file:
+    path: /tmp/Release.key
+    state: absent
+
+
+- name: Add Kubernetes apt repository
+  ansible.builtin.copy:
+    dest: /etc/apt/sources.list.d/kubernetes.list
+    content: |
+      deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /
+
+- name: Update apt package index after adding Kubernetes repository
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Install kubelet, kubeadm, and kubectl
+  ansible.builtin.apt:
+    name:
+      - kubelet
+      - kubeadm
+      - kubectl
+    state: present
+
+- name: Pin kubelet, kubeadm, and kubectl versions
+  ansible.builtin.command:
+    cmd: apt-mark hold kubelet kubeadm kubectl
+
+- name: Enable and start kubelet service
+  ansible.builtin.systemd:
+    name: kubelet
+    enabled: yes
+    state: started
