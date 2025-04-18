@@ -1,14 +1,6 @@
 ---
 
 
-- name: disable swap for this boot
-  ansible.builtin.command: swapoff -a
-  when: ansible_swaptotal_mb > 0
-
-- name: disable swap permanently
-  ansible.builtin.command: sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
-  when: ansible_swaptotal_mb > 0
-
 - name: Update apt package index
   ansible.builtin.apt:
     update_cache: yes
@@ -67,6 +59,7 @@
     cmd: apt-mark hold kubelet kubeadm kubectl
 
 - name: Enable and start kubelet service
+  when: auto_run
   ansible.builtin.systemd:
     name: kubelet
     enabled: yes
