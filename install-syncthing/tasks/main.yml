@@ -7,12 +7,12 @@
 
 - name: Enable Syncthing service for the current user
   systemd:
-    name: "syncthing@{{ ansible_user }}.service"
+    name: "syncthing@{{ username }}.service"
     enabled: yes
   when: ansible_facts['distribution'] == 'Debian'
 
 - name: Start Syncthing service for the current user
   systemd:
-    name: "syncthing@{{ ansible_user }}.service"
+    name: "syncthing@{{ username }}.service"
     state: started
   when: ansible_facts['distribution'] == 'Debian'
