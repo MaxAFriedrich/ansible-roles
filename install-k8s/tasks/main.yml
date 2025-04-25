@@ -14,6 +14,27 @@
       - gpg
     state: present
 
+- name: Get latest release info from GitHub
+  uri:
+    url: "https://api.github.com/repos/Mirantis/cri-dockerd/releases/latest"
+    return_content: yes
+  register: release_info
+
+- name: Extract download URL for debian-bookworm_amd64.deb
+  set_fact:
+    download_url: >-
+      {{ release_info.json.assets | selectattr("name", "search", "debian-bookworm_amd64.deb$") | map(attribute="browser_download_url") | list | first }}
+
+- name: Download the Debian package from GitHub
+  get_url:
+    url: "{{ download_url }}"
+    dest: /tmp/cri-dockerd.debian-bookworm_amd64.deb
+
+- name: Install cri-dockerd
+  ansible.builtin.apt:
+    deb: /tmp/cri-dockerd.debian-bookworm_amd64.deb
+    state: present
+
 - name: Ensure /etc/apt/keyrings directory exists
   ansible.builtin.file:
     path: /etc/apt/keyrings
