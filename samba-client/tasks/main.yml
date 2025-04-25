@@ -1,0 +1,40 @@
+---
+- name: Install cifs-utils package
+  ansible.builtin.apt:
+    name: cifs-utils
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Create mount point directory
+  ansible.builtin.file:
+    path: "{{ samba_mount_point }}"
+    state: directory
+    mode: '0755'
+  become: yes
+
+- name: Create Samba credentials file
+  ansible.builtin.copy:
+    dest: "/etc/samba/credentials_{{ samba_share_name }}"
+    content: |
+      username={{ samba_username }}
+      password={{ samba_password }}
+    owner: root
+    group: root
+    mode: '0600'
+  become: yes
+
+- name: Add Samba share entry to /etc/fstab
+  ansible.builtin.mount:
+    path: "{{ samba_mount_point }}"
+    src: "//{{ samba_server }}/{{ samba_share_name }}"
+    fstype: cifs
+    opts: "credentials=/etc/samba/credentials_{{ samba_share_name }},iocharset=utf8,sec=ntlm"
+    state: present
+  become: yes
+
+- name: Mount the Samba share
+  ansible.builtin.mount:
+    path: "{{ samba_mount_point }}"
+    state: mounted
+  become: yes
