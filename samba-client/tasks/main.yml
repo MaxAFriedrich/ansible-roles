@@ -13,6 +13,13 @@
     mode: '0755'
   become: yes
 
+- name: Create etc/samba dir
+  ansible.builtin.file:
+    path: /etc/samba
+    state: directory
+    mode: '0755'
+  become: yes
+
 - name: Create Samba credentials file
   ansible.builtin.copy:
     dest: "/etc/samba/credentials_{{ samba_share_name }}"
@@ -29,12 +36,17 @@
     path: "{{ samba_mount_point }}"
     src: "//{{ samba_server }}/{{ samba_share_name }}"
     fstype: cifs
-    opts: "credentials=/etc/samba/credentials_{{ samba_share_name }},iocharset=utf8,sec=ntlm"
+    opts: "credentials=/etc/samba/credentials_{{ samba_share_name }},iocharset=utf8,vers=3.0"
     state: present
   become: yes
 
 - name: Mount the Samba share
-  ansible.builtin.mount:
-    path: "{{ samba_mount_point }}"
-    state: mounted
   become: yes
+  command:
+    cmd: systemctl daemon-reload
+
+- name: Mount the Samba share
+  ansible.builtin.command:
+        cmd: mount -a
+  become: yes
+  ignore_errors: yes
