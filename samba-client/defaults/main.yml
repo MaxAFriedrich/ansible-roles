@@ -1,6 +1,0 @@
----
-samba_server: "copper.m4x.ovh"
-samba_share_name: "shared"
-samba_mount_point: "/mnt/samba_shared"
-samba_username: "max"
-samba_password: "max"
