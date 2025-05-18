@@ -1,0 +1,21 @@
+---
+
+- name: install pipewire deps
+  ansible.builtin.apt:
+    name:
+      - pipewire-audio
+      - pipewire
+      - pipewire-alsa
+      - pipewire-jack
+      - wireplumber
+      - pipewire-pulse
+      - libspa-0.2-bluetooth
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: remove pulseaudio
+  ansible.builtin.apt:
+    name: pulseaudio
+    state: absent
+  become: yes
