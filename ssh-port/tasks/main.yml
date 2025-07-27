@@ -1,0 +1,21 @@
+---
+- name: Ensure SSH port is set to 23
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?Port '
+    line: 'Port {{ FORCE_SSH_PORT }}'
+    state: present
+  notify: Restart SSH
+
+- name: Ensure SSH service is enabled and started
+  service:
+    name: ssh
+    state: started
+    enabled: yes
+
+# Handlers
+- name: Restart SSH
+  service:
+    name: ssh
+    state: restarted
+
