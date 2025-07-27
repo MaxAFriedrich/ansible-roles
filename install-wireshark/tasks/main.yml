@@ -11,6 +11,15 @@
     vtype: 'boolean'
     value: 'true'
 
+# Hack to make sure everything is installed
+
+- name: Hack to make sure wireshark is installed
+  apt:
+    name: wireshark
+    state: present
+
+
+
 - name: Install CLI package
   apt:
     name: "{{ item }}"
