@@ -1,0 +1,34 @@
+---
+- name: Install required packages
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - gnupg
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Add Duplicati GPG key
+  apt_key:
+    url: https://updates.duplicati.com/beta/duplicati_public.asc
+    state: present
+  become: yes
+
+- name: Add Duplicati repository
+  apt_repository:
+    repo: "deb https://updates.duplicati.com/beta/ duplicati-get-releases/"
+    state: present
+    filename: duplicati
+  become: yes
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+  become: yes
+
+- name: Install Duplicati
+  apt:
+    name: duplicati
+    state: present
+  become: yes

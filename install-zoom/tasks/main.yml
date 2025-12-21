@@ -1,0 +1,22 @@
+---
+- name: Ensure required packages are installed
+  apt:
+    name:
+      - wget
+    state: present
+
+- name: Download Zoom .deb package
+  get_url:
+    url: https://zoom.us/client/latest/zoom_amd64.deb
+    dest: /tmp/zoom_amd64.deb
+    mode: '0644'
+
+- name: Install Zoom
+  apt:
+    deb: /tmp/zoom_amd64.deb
+    state: present
+
+- name: Clean up downloaded package
+  file:
+    path: /tmp/zoom_amd64.deb
+    state: absent
