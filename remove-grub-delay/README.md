@@ -1,3 +1,9 @@
 # remove-grub-delay
 
-Remove the grub delay on boot.
+Sets GRUB_TIMEOUT=0 and updates grub.
+
+Usage
+
+- hosts: all
+  roles:
+    - remove-grub-delay

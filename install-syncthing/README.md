@@ -1,15 +1,11 @@
 # install-syncthing
 
-This role installs Syncthing on Debian-based systems and enables and starts the Syncthing service for the current user.
+Installs Syncthing and enables the user service.
 
-## Usage
+Usage
 
-Include this role in your playbook to install Syncthing.
-
-Example playbook:
-
-```yaml
 - hosts: all
-  become: yes
   roles:
     - role: install-syncthing
+      vars:
+        username: "{{ ansible_user }}"

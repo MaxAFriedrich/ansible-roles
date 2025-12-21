@@ -1,9 +1,13 @@
 # git-clone
 
-This role clones a git repository to a specified directory. And creates the directory if it does not exist.
+Clones a git repo to a directory (creates it if missing).
 
-## vars
+Usage
 
-- `repo`: The git repository to clone. **Required**
-- `dest`: The directory to clone the repository to. Default is `/docker`.
-- `branch`: The branch of the repository to clone. Default is `main`.
+- hosts: all
+  roles:
+    - role: git-clone
+      vars:
+        repo: "<required>"
+        dest: /docker
+        branch: main

@@ -1,3 +1,9 @@
 # install-mullvad
 
-This role installs Mullvad VPN on Debian-based systems.
+Installs Mullvad VPN from the official repository.
+
+Usage
+
+- hosts: all
+  roles:
+    - install-mullvad

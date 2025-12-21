@@ -1,8 +1,9 @@
 # install-common
 
-This role installs common packages that are always useful and have minimal security implications.
+Installs basic tools (curl, git, htop, vim).
 
-- curl
-- git
-- htop
-- vim
+Usage
+
+- hosts: all
+  roles:
+    - install-common

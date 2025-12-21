@@ -1,10 +1,9 @@
 # set-hostname
 
-## Description
+Sets the system hostname to `inventory_hostname` and updates /etc/hostname and /etc/hosts.
 
-## Role Variables
+Usage
 
-## Dependencies
-
-## Example Usage
-
+- hosts: all
+  roles:
+    - set-hostname

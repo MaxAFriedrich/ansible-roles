@@ -1,7 +1,9 @@
 # setup-network-manager
 
-This role sets up NetworkManager to manage network interfaces on Debian-based systems.
+Configures NetworkManager to manage interfaces (updates NetworkManager.conf and /etc/network/interfaces).
 
-## Usage
+Usage
 
-Include this role in your playbook to configure NetworkManager.
+- hosts: all
+  roles:
+    - setup-network-manager

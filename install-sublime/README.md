@@ -1,3 +1,9 @@
 # install-sublime
 
-This role installs Sublime Text on Debian-based systems.
+Installs Sublime Text from the official apt repo.
+
+Usage
+
+- hosts: all
+  roles:
+    - install-sublime

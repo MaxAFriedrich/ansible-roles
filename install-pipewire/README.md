@@ -1,10 +1,9 @@
 # install-pipewire
 
-## Description
+Installs PipeWire components and removes PulseAudio.
 
-## Role Variables
+Usage
 
-## Dependencies
-
-## Example Usage
-
+- hosts: all
+  roles:
+    - install-pipewire

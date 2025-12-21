@@ -1,10 +1,9 @@
 # disable-sleep
 
-## Description
+Disables suspend/hibernate and lid actions via systemd config, then restarts logind.
 
-## Role Variables
+Usage
 
-## Dependencies
-
-## Example Usage
-
+- hosts: all
+  roles:
+    - disable-sleep

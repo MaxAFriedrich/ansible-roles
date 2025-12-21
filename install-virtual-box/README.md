@@ -1,3 +1,9 @@
 # install-virtual-box
 
-This role installs VirtualBox 7.0 on Debian-based systems.
+Installs VirtualBox 7 on Debian-based systems.
+
+Usage
+
+- hosts: all
+  roles:
+    - install-virtual-box

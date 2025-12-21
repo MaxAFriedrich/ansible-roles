@@ -1,10 +1,9 @@
 # fix-sources-list
 
-## Description
+Replaces /etc/apt/sources.list with Debian bookworm entries and updates apt.
 
-## Role Variables
+Usage
 
-## Dependencies
-
-## Example Usage
-
+- hosts: all
+  roles:
+    - fix-sources-list

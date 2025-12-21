@@ -1,25 +1,9 @@
 # install-zoom
 
-This role installs Zoom video conferencing client on Debian-based systems.
+Installs Zoom via the official .deb package.
 
-## Requirements
+Usage
 
-- Debian-based Linux distribution (Ubuntu, Debian, etc.)
-- sudo/root access
-
-## Role Variables
-
-None.
-
-## Dependencies
-
-None.
-
-## Example Playbook
-
-```yaml
-- hosts: workstations
-  become: yes
+- hosts: all
   roles:
     - install-zoom
-```

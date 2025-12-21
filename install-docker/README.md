@@ -1,12 +1,11 @@
 # install-docker
-This role installs Docker and Docker Compose.
 
-Supported platforms:
+Installs Docker and docker-compose, starts the service, and optionally runs watchtower.
 
-- Debian
-- RHEL distributions
-- Alpine
+Usage
 
-# Variables
-
-- `auto_update`: Launch a watchtower container to automatically update containers. Default: `false`
+- hosts: all
+  roles:
+    - role: install-docker
+      vars:
+        auto_update: false

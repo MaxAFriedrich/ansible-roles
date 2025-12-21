@@ -1,3 +1,9 @@
 # install-brave
 
-This role installs Brave Browser on Debian-based systems.
+Installs Brave Browser from the official APT repository.
+
+Usage
+
+- hosts: all
+  roles:
+    - install-brave

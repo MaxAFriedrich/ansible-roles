@@ -1,10 +1,9 @@
 # update-now
 
-## Description
+Runs apt update/upgrade/dist-upgrade/autoremove.
 
-## Role Variables
+Usage
 
-## Dependencies
-
-## Example Usage
-
+- hosts: all
+  roles:
+    - update-now

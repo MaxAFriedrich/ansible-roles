@@ -1,3 +1,9 @@
 # install-lazygit
 
-This role installs lazygit by downloading the latest release from GitHub.
+Installs lazygit from the latest GitHub release.
+
+Usage
+
+- hosts: all
+  roles:
+    - install-lazygit

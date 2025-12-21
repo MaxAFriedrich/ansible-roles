@@ -1,3 +1,9 @@
 # install-signal
 
-This role installs Signal on Debian-based systems.
+Installs Signal Desktop from the official repository.
+
+Usage
+
+- hosts: all
+  roles:
+    - install-signal

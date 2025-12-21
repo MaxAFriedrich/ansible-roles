@@ -1,3 +1,9 @@
 # auto-update
 
-This role will install and configure the `unattended-upgrades` package on Debian-based systems.
+Installs and configures unattended upgrades on Debian-based systems.
+
+Usage
+
+- hosts: all
+  roles:
+    - auto-update
