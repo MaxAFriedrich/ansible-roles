@@ -1,0 +1,58 @@
+---
+- name: Ensure required packages for OpenTofu
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+    state: present
+  when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
+
+- name: Ensure keyrings directory exists
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+  when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
+
+- name: Download OpenTofu GPG key
+  command: curl -fsSL https://get.opentofu.org/opentofu.gpg -o /etc/apt/keyrings/opentofu.gpg
+  args:
+    creates: /etc/apt/keyrings/opentofu.gpg
+  when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
+
+- name: Download and dearmor OpenTofu repository key
+  shell: curl -fsSL https://packages.opentofu.org/opentofu/tofu/gpgkey | gpg --no-tty --batch --dearmor -o /etc/apt/keyrings/opentofu-repo.gpg
+  args:
+    creates: /etc/apt/keyrings/opentofu-repo.gpg
+  when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
+
+- name: Ensure key files are world-readable
+  file:
+    path: "{{ item }}"
+    mode: '0644'
+  loop:
+    - /etc/apt/keyrings/opentofu.gpg
+    - /etc/apt/keyrings/opentofu-repo.gpg
+  when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
+
+- name: Add OpenTofu APT source list
+  copy:
+    dest: /etc/apt/sources.list.d/opentofu.list
+    content: |
+      deb [signed-by=/etc/apt/keyrings/opentofu.gpg,/etc/apt/keyrings/opentofu-repo.gpg] https://packages.opentofu.org/opentofu/tofu/any/ any main
+      deb-src [signed-by=/etc/apt/keyrings/opentofu.gpg,/etc/apt/keyrings/opentofu-repo.gpg] https://packages.opentofu.org/opentofu/tofu/any/ any main
+    mode: '0644'
+  when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+  when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
+
+- name: Install OpenTofu
+  apt:
+    name: tofu
+    state: present
+  when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
