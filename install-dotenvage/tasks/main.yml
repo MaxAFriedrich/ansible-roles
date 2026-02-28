@@ -1,0 +1,31 @@
+---
+- name: Get the latest dotenvage version
+  uri:
+    url: https://api.github.com/repos/dataroadinc/dotenvage/releases/latest
+    return_content: yes
+  register: github_release
+
+- name: Extract dotenvage version
+  set_fact:
+    dotenvage_version: "{{ github_release.json.tag_name | regex_replace('^v', '') }}"
+
+- name: Download dotenvage archive
+  get_url:
+    url: https://github.com/dataroadinc/dotenvage/releases/latest/download/dotenvage-x86_64-unknown-linux-gnu.zip
+    dest: /tmp/dotenvage.zip
+
+- name: Extract dotenvage binary
+  unarchive:
+    src: /tmp/dotenvage.zip
+    dest: /tmp/
+
+- name: Install dotenvage binary
+  copy:
+    src: /tmp/dotenvage
+    dest: /usr/local/bin/dotenvage
+    mode: '0755'
+
+- name: Clean up
+  file:
+    path: /tmp/dotenvage.zip
+    state: absent
