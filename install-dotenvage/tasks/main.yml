@@ -4,28 +4,47 @@
     url: https://api.github.com/repos/dataroadinc/dotenvage/releases/latest
     return_content: yes
   register: github_release
+  when: dotenvage_version is not defined
 
-- name: Extract dotenvage version
+- name: Set dotenvage version
   set_fact:
-    dotenvage_version: "{{ github_release.json.tag_name | regex_replace('^v', '') }}"
+    dotenvage_version: "{{ dotenvage_version | default(github_release.json.tag_name) }}"
 
-- name: Download dotenvage archive
-  get_url:
-    url: https://github.com/dataroadinc/dotenvage/releases/latest/download/dotenvage-x86_64-unknown-linux-gnu.zip
-    dest: /tmp/dotenvage.zip
+- name: Set build paths
+  set_fact:
+    dotenvage_repo_url: "https://github.com/dataroadinc/dotenvage.git"
+    dotenvage_src_dir: "/tmp/dotenvage-src"
 
-- name: Extract dotenvage binary
-  unarchive:
-    src: /tmp/dotenvage.zip
-    dest: /tmp/
+- name: Remove previous workspace
+  file:
+    path: "{{ dotenvage_src_dir }}"
+    state: absent
+
+- name: Checkout dotenvage source
+  git:
+    repo: "{{ dotenvage_repo_url }}"
+    dest: "{{ dotenvage_src_dir }}"
+    version: "{{ dotenvage_version }}"
+    depth: 1
+    force: true
+
+- name: Build static dotenvage binary inside Docker
+  command: >
+    docker run --rm
+    -v {{ dotenvage_src_dir }}:/source
+    -w /source
+    ghcr.io/messense/rust-musl-cross:x86_64-musl
+    sh -c "rustup target add x86_64-unknown-linux-musl && cargo build --target x86_64-unknown-linux-musl --release"
+  environment:
+    CARGO_TERM_COLOR: never
+  register: build_dotenvage
+  changed_when: build_dotenvage.rc == 0
 
 - name: Install dotenvage binary
   copy:
-    src: /tmp/dotenvage
+    src: "{{ dotenvage_src_dir }}/target/x86_64-unknown-linux-musl/release/dotenvage"
     dest: /usr/local/bin/dotenvage
+    owner: root
+    group: root
     mode: '0755'
-
-- name: Clean up
-  file:
-    path: /tmp/dotenvage.zip
-    state: absent
+    remote_src: yes
